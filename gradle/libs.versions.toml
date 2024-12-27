@@ -20,6 +20,7 @@ ksp = "2.0.21-1.0.26"
 landscapist = "2.4.4"
 timber = "5.0.1"
 material = "1.12.0"
+parcelize = "1.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -61,4 +62,5 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
+kotlin-parcelize = { id = "kotlin-parcelize" }
 
