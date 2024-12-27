@@ -84,4 +84,5 @@ dependencies {
 
     implementation(libs.timber)
     implementation(libs.material)
+    implementation(libs.androidx.multidex)
 }
