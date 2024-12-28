@@ -47,4 +47,15 @@ class UniversityRepositoryImpl @Inject constructor(
             emit(ResultState.Error(e))
         }
     }
+
+    override fun searchUniversitiesByName(query: String): Flow<ResultState<List<University>>> = flow {
+        emit(ResultState.Loading)
+        try {
+            val searchResultEntities = if (query.isNotEmpty()) universityDao.searchUniversitiesByName(query) else universityDao.loadUniversities()
+            val searchResultMapped = universityDbEntityMapper.fromResponsesToEntities(searchResultEntities).toList()
+            emit(ResultState.Success(searchResultMapped))
+        } catch (e: Exception) {
+            emit(ResultState.Error(e))
+        }
+    }
 }

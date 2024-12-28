@@ -1,5 +1,6 @@
 package id.aflah.universitieslist.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,13 +25,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import id.aflah.universitieslist.R
 import id.aflah.universitieslist.domain.ResultState
 import id.aflah.universitieslist.domain.entity.University
+import id.aflah.universitieslist.ui.components.EmptyState
 import id.aflah.universitieslist.ui.components.IndeterminateCircularIndicator
 import id.aflah.universitieslist.ui.components.LinkText
 import id.aflah.universitieslist.ui.components.SearchBar
@@ -96,12 +99,15 @@ fun MainScreen(navController: NavHostController) {
                     coroutineScope.launch {
                         snackbarHostState
                             .showSnackbar(
-                                message = "Failed feth data, please try again later!",
+                                message = "Failed fetch data, please try again later!",
                             )
                     }
                 }
 
                 is ResultState.Success<List<University>> -> {
+                    if (mainViewModel.isSearchState.value && universitiesList.isEmpty()) {
+                        EmptyState(mainViewModel.searchQueryState.value)
+                    }
                     LazyColumn(
                         modifier = Modifier.padding(8.dp)
                     ) {
@@ -114,7 +120,6 @@ fun MainScreen(navController: NavHostController) {
                             ) {
                                 Column {
                                     Text(university.name)
-                                    Text(university.country)
                                     university.webPages.forEach { webPage ->
                                         LinkText(webPage, navController)
                                     }

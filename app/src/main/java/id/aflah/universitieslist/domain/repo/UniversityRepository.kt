@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface UniversityRepository {
     fun getUniversitiesList(country: String): Flow<ResultState<List<University>>>
+    fun searchUniversitiesByName(query: String): Flow<ResultState<List<University>>>
 }

@@ -10,6 +10,6 @@ abstract class UniversityDao: BaseDao<UniversityDbEntity>() {
     @Query("SELECT * FROM university_table ORDER BY name")
     abstract suspend fun loadUniversities(): List<UniversityDbEntity>
 
-    @Query("SELECT * FROM university_table WHERE name = :name ORDER BY name")
+    @Query("SELECT * FROM university_table WHERE name  LIKE '%' ||  :name || '%' ORDER BY name")
     abstract suspend fun searchUniversitiesByName(name: String): List<UniversityDbEntity>
 }

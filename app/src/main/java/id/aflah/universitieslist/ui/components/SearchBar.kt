@@ -47,7 +47,9 @@ fun SearchBar(shouldAppBarVisible: MutableState<Boolean>, viewModel: MainViewMod
             ),
             onValueChange = {
                 text = it
-                // TODO handle search in local data
+                if (text.length >= 3) {
+                    viewModel.searchUniversitiesByName(query = text)
+                }
             },
             singleLine = true,
             trailingIcon = {
@@ -60,16 +62,21 @@ fun SearchBar(shouldAppBarVisible: MutableState<Boolean>, viewModel: MainViewMod
                             .offset(x = 10.dp)
                             .clickable {
                                 text = ""
+                                viewModel.getUniversitiesList("indonesia")
+                                viewModel.isSearchState.value = false
                             }
                     )
                 } else {
                     Icon(
                         Icons.Filled.Clear,
-                        contentDescription = "search",
+                        contentDescription = "clear and back",
                         modifier = Modifier
                             .padding(end = 16.dp)
                             .offset(x = 10.dp)
                             .clickable {
+                                text = ""
+                                viewModel.getUniversitiesList("indonesia")
+                                viewModel.isSearchState.value = false
                                 shouldAppBarVisible.value = false
                             }
                     )
@@ -83,5 +90,4 @@ fun SearchBar(shouldAppBarVisible: MutableState<Boolean>, viewModel: MainViewMod
             focusRequester.requestFocus()
         }
     }
-
 }
