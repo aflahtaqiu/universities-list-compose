@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import id.aflah.universitieslist.domain.ResultState
 import id.aflah.universitieslist.domain.entity.University
 import id.aflah.universitieslist.domain.usecase.GetUniversitiesListUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ class MainViewModel @Inject constructor(
     val universitiesListState: MutableState<ResultState<List<University>>?> = mutableStateOf(null)
 
     fun getUniversitiesList(country: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             getUniversitiesListUseCase.execute(country).onEach {
                 universitiesListState.value = it
             }.launchIn(viewModelScope)

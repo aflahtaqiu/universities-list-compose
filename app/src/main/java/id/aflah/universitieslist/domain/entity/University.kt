@@ -11,4 +11,6 @@ data class University(
     var alphaTwoCodes: String = "",
     var domains: List<String> = emptyList(),
     var webPages: List<String> = emptyList(),
+    var createdAt: String = "",
+    var updatedAt: String = "",
 ): Parcelable
