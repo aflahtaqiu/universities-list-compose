@@ -27,6 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import id.aflah.universitieslist.domain.ResultState
 import id.aflah.universitieslist.domain.entity.University
 import id.aflah.universitieslist.ui.components.IndeterminateCircularIndicator
@@ -37,14 +39,20 @@ import id.aflah.universitieslist.utils.cornerRadius
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen() {
+fun MainScreen(navController: NavHostController) {
     val mainViewModel = hiltViewModel<MainViewModel>()
     val shouldAppBarVisible = remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    var universitiesList: List<University> = mutableListOf()
 
     LaunchedEffect(Unit) {
         mainViewModel.getUniversitiesList("indonesia")
+    }
+
+    if (mainViewModel.universitiesListState.value is ResultState.Success<List<University>>) {
+        universitiesList =
+            ((mainViewModel.universitiesListState.value as? ResultState.Success<List<University>>)?.data as? ArrayList).orEmpty()
     }
 
     Scaffold(
@@ -93,12 +101,10 @@ fun MainScreen() {
                     }
                 }
 
-                is ResultState.Success -> {
+                is ResultState.Success<List<University>> -> {
                     LazyColumn(
                         modifier = Modifier.padding(8.dp)
                     ) {
-                        val universitiesList =
-                            (mainViewModel.universitiesListState.value as ResultState.Success<List<University>>).data as ArrayList
                         items(universitiesList) { university ->
                             Box(
                                 modifier = Modifier
@@ -110,7 +116,7 @@ fun MainScreen() {
                                     Text(university.name)
                                     Text(university.country)
                                     university.webPages.forEach { webPage ->
-                                        LinkText(webPage)
+                                        LinkText(webPage, navController)
                                     }
                                 }
                             }
