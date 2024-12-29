@@ -86,4 +86,13 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.multidex)
     implementation(libs.sqlCipher)
+
+    testImplementation(libs.elymr)
+    testImplementation(libs.mockito)
+    testImplementation(libs.mockitoInline)
+    testImplementation(libs.mockitoKotlin)
+    testImplementation(libs.jUnitRules)
+    testImplementation(libs.jUnitRunner)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing)
 }
