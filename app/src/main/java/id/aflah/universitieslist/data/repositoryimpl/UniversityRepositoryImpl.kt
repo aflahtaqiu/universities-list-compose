@@ -38,6 +38,9 @@ class UniversityRepositoryImpl @Inject constructor(
                         .map {
                             it.copy(updatedAt = DateHelper.getTodayMillis().toString())
                         }
+                if (isEntitiesFetchInDifferentDayExist && localEntities.isNotEmpty()) {
+                    universityDao.deleteAllUniversities()
+                }
                 universityDao.upsert(resultMappedDbEntity)
             }
             val newLocalEntities = universityDao.loadUniversities()
@@ -51,7 +54,7 @@ class UniversityRepositoryImpl @Inject constructor(
     override fun searchUniversitiesByName(query: String): Flow<ResultState<List<University>>> = flow {
         emit(ResultState.Loading)
         try {
-            val searchResultEntities = if (query.isNotEmpty()) universityDao.searchUniversitiesByName(query) else universityDao.loadUniversities()
+            val searchResultEntities = universityDao.searchUniversitiesByName(query)
             val searchResultMapped = universityDbEntityMapper.fromResponsesToEntities(searchResultEntities).toList()
             emit(ResultState.Success(searchResultMapped))
         } catch (e: Exception) {

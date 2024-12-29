@@ -1,8 +1,6 @@
 package id.aflah.universitieslist.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -11,7 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -25,7 +22,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,9 +32,10 @@ import id.aflah.universitieslist.domain.ResultState
 import id.aflah.universitieslist.domain.entity.University
 import id.aflah.universitieslist.ui.components.EmptyState
 import id.aflah.universitieslist.ui.components.IndeterminateCircularIndicator
-import id.aflah.universitieslist.ui.components.LinkText
 import id.aflah.universitieslist.ui.components.SearchBar
+import id.aflah.universitieslist.ui.components.UniversityItem
 import id.aflah.universitieslist.ui.theme.Typography
+import id.aflah.universitieslist.utils.Constants
 import id.aflah.universitieslist.utils.cornerRadius
 import kotlinx.coroutines.launch
 
@@ -50,13 +48,14 @@ fun MainScreen(navController: NavHostController) {
     var universitiesList: List<University> = mutableListOf()
 
     LaunchedEffect(Unit) {
-        mainViewModel.getUniversitiesList("indonesia")
+        mainViewModel.getUniversitiesList(Constants.INDONESIA_COUNTRY_QUERY)
     }
 
     if (mainViewModel.universitiesListState.value is ResultState.Success<List<University>>) {
         universitiesList =
             ((mainViewModel.universitiesListState.value as? ResultState.Success<List<University>>)?.data as? ArrayList).orEmpty()
     }
+    val messageFailedFetchData = stringResource(R.string.message_failed_fetch_data)
 
     Scaffold(
         topBar = {
@@ -64,11 +63,12 @@ fun MainScreen(navController: NavHostController) {
                 SearchBar(shouldAppBarVisible, mainViewModel)
             } else {
                 Text(
-                    text = "Universities List",
+                    text = stringResource(R.string.app_name),
                     maxLines = 1,
                     style = Typography.headlineLarge,
                     overflow = TextOverflow.Ellipsis,
-                    color = Color.White
+                    color = Color.Black,
+                    modifier = Modifier.padding(4.dp)
                 )
             }
         },
@@ -87,51 +87,48 @@ fun MainScreen(navController: NavHostController) {
             }
         },
     ) {
-        Box(Modifier.padding(it).fillMaxSize()) {
-            when(mainViewModel.universitiesListState.value) {
-                is ResultState.Loading -> {
-                    IndeterminateCircularIndicator(
-                        modifier = Modifier.width(128.dp).align(Alignment.Center)
+        Box(
+            Modifier
+                .padding(it)
+                .fillMaxSize()) {
+            if (mainViewModel.isSearchState.value && (
+                        universitiesList.isEmpty() ||
+                                mainViewModel.searchQueryState.value.length < Constants.MINIMUM_CHAR_TO_SEARCH
                     )
-                }
-
-                is ResultState.Error -> {
-                    coroutineScope.launch {
-                        snackbarHostState
-                            .showSnackbar(
-                                message = "Failed fetch data, please try again later!",
-                            )
+                ) {
+                EmptyState(mainViewModel.searchQueryState.value)
+            } else {
+                when (mainViewModel.universitiesListState.value) {
+                    is ResultState.Loading -> {
+                        IndeterminateCircularIndicator(
+                            modifier = Modifier
+                                .width(128.dp)
+                                .align(Alignment.Center)
+                        )
                     }
-                }
 
-                is ResultState.Success<List<University>> -> {
-                    if (mainViewModel.isSearchState.value && universitiesList.isEmpty()) {
-                        EmptyState(mainViewModel.searchQueryState.value)
-                    }
-                    LazyColumn(
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-                        items(universitiesList) { university ->
-                            Box(
-                                modifier = Modifier
-                                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                                    .cornerRadius(8)
-                                    .padding(horizontal = 8.dp)
-                            ) {
-                                Column {
-                                    Text(university.name)
-                                    university.webPages.forEach { webPage ->
-                                        LinkText(webPage, navController)
-                                    }
-                                }
-                            }
-                            HorizontalDivider(color = Color.Gray, thickness = 1.dp)
+                    is ResultState.Error -> {
+                        coroutineScope.launch {
+                            snackbarHostState
+                                .showSnackbar(
+                                    message = messageFailedFetchData,
+                                )
                         }
                     }
-                }
 
-                else -> {
-                    Box(Modifier.padding(it))
+                    is ResultState.Success<List<University>> -> {
+                        LazyColumn(
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            items(universitiesList) { university ->
+                                UniversityItem(university, navController)
+                            }
+                        }
+                    }
+
+                    else -> {
+                        Box(Modifier.padding(it))
+                    }
                 }
             }
         }
