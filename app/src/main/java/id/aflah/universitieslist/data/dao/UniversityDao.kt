@@ -12,4 +12,7 @@ abstract class UniversityDao: BaseDao<UniversityDbEntity>() {
 
     @Query("SELECT * FROM university_table WHERE name  LIKE '%' ||  :name || '%' ORDER BY name")
     abstract suspend fun searchUniversitiesByName(name: String): List<UniversityDbEntity>
+
+    @Query("DELETE FROM university_table")
+    abstract suspend fun deleteAllUniversities()
 }

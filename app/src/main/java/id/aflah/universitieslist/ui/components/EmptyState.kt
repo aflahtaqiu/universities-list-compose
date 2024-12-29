@@ -19,7 +19,9 @@ import id.aflah.universitieslist.R
 import id.aflah.universitieslist.ui.theme.Typography
 
 @Composable
-fun EmptyState(query: String) {
+fun EmptyState(
+    query: String,
+) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -38,7 +40,7 @@ fun EmptyState(query: String) {
                 style = Typography.headlineSmall
             )
             Text(
-                "Seems there are no university with $query name",
+                if (query.length >= 3) "Seems there are no university with $query name" else "Please input min 3 chars",
                 style = Typography.bodyLarge,
                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
                 textAlign = TextAlign.Center,

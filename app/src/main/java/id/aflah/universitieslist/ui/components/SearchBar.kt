@@ -25,6 +25,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import id.aflah.universitieslist.ui.screens.MainViewModel
+import id.aflah.universitieslist.utils.Constants
 
 @Composable
 fun SearchBar(shouldAppBarVisible: MutableState<Boolean>, viewModel: MainViewModel){
@@ -47,8 +48,15 @@ fun SearchBar(shouldAppBarVisible: MutableState<Boolean>, viewModel: MainViewMod
             ),
             onValueChange = {
                 text = it
-                if (text.length >= 3) {
+                if (text.length >= Constants.MINIMUM_CHAR_TO_SEARCH) {
                     viewModel.searchUniversitiesByName(query = text)
+                } else {
+                    if (text.isNotEmpty()) {
+                        viewModel.isSearchState.value = true
+                        viewModel.searchQueryState.value = text
+                    } else {
+                        loadAllUniversities(viewModel)
+                    }
                 }
             },
             singleLine = true,
@@ -62,7 +70,7 @@ fun SearchBar(shouldAppBarVisible: MutableState<Boolean>, viewModel: MainViewMod
                             .offset(x = 10.dp)
                             .clickable {
                                 text = ""
-                                viewModel.getUniversitiesList("indonesia")
+                                loadAllUniversities(viewModel)
                                 viewModel.isSearchState.value = false
                             }
                     )
@@ -75,7 +83,7 @@ fun SearchBar(shouldAppBarVisible: MutableState<Boolean>, viewModel: MainViewMod
                             .offset(x = 10.dp)
                             .clickable {
                                 text = ""
-                                viewModel.getUniversitiesList("indonesia")
+                                loadAllUniversities(viewModel)
                                 viewModel.isSearchState.value = false
                                 shouldAppBarVisible.value = false
                             }
@@ -90,4 +98,8 @@ fun SearchBar(shouldAppBarVisible: MutableState<Boolean>, viewModel: MainViewMod
             focusRequester.requestFocus()
         }
     }
+}
+
+private fun loadAllUniversities(viewModel: MainViewModel) {
+    viewModel.getUniversitiesList(Constants.INDONESIA_COUNTRY_QUERY)
 }
