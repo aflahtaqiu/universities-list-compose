@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Universities List</string>
+    <string name="message_failed_fetch_data">Failed fetch data, please try again later!</string>
+    <string name="hint_search">Search</string>
+    <string name="title_empty_state">Opppss...</string>
+    <string name="message_search_no_found">Seems there are no university with %1$s name</string>
+    <string name="message_input_min_three_chars">Please input min 3 chars</string>
+    <string name="cd_clear_text">clear text</string>
+    <string name="cd_clear_and_back">clear and back</string>
+    <string name="cd_empty_state_image">empty state image</string>
 </resources>

@@ -23,12 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import id.aflah.universitieslist.R
 import id.aflah.universitieslist.ui.screens.MainViewModel
 import id.aflah.universitieslist.utils.Constants
 
 @Composable
-fun SearchBar(shouldAppBarVisible: MutableState<Boolean>, viewModel: MainViewModel){
+fun SearchBar(shouldAppBarVisible: MutableState<Boolean>, viewModel: MainViewModel) {
     var text by remember { mutableStateOf("") }
     val focusRequester = FocusRequester()
     BackHandler(shouldAppBarVisible.value) {
@@ -61,37 +63,31 @@ fun SearchBar(shouldAppBarVisible: MutableState<Boolean>, viewModel: MainViewMod
             },
             singleLine = true,
             trailingIcon = {
-                if (text.trim().isNotEmpty()) {
-                    Icon(
-                        Icons.Filled.Clear,
-                        contentDescription = "clear text",
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .offset(x = 10.dp)
-                            .clickable {
-                                text = ""
-                                loadAllUniversities(viewModel)
-                                viewModel.isSearchState.value = false
-                            }
-                    )
-                } else {
-                    Icon(
-                        Icons.Filled.Clear,
-                        contentDescription = "clear and back",
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .offset(x = 10.dp)
-                            .clickable {
-                                text = ""
-                                loadAllUniversities(viewModel)
-                                viewModel.isSearchState.value = false
+                Icon(
+                    Icons.Filled.Clear,
+                    contentDescription = stringResource(
+                        if (text.trim()
+                                .isNotEmpty()
+                        ) R.string.cd_clear_text else R.string.cd_clear_and_back
+                    ),
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .offset(x = 10.dp)
+                        .clickable {
+                            text = ""
+                            loadAllUniversities(viewModel)
+                            viewModel.isSearchState.value = false
+                            if (text
+                                    .trim()
+                                    .isEmpty()
+                            ) {
                                 shouldAppBarVisible.value = false
                             }
-                    )
-                }
+                        }
+                )
             },
             placeholder = {
-                Text("Search...")
+                Text(stringResource(R.string.hint_search))
             }
         )
         LaunchedEffect(Unit) {

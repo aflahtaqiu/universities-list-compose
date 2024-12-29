@@ -55,6 +55,7 @@ fun MainScreen(navController: NavHostController) {
         universitiesList =
             ((mainViewModel.universitiesListState.value as? ResultState.Success<List<University>>)?.data as? ArrayList).orEmpty()
     }
+    val messageFailedFetchData = stringResource(R.string.message_failed_fetch_data)
 
     Scaffold(
         topBar = {
@@ -110,7 +111,7 @@ fun MainScreen(navController: NavHostController) {
                         coroutineScope.launch {
                             snackbarHostState
                                 .showSnackbar(
-                                    message = "Failed fetch data, please try again later!",
+                                    message = messageFailedFetchData,
                                 )
                         }
                     }
