@@ -93,4 +93,6 @@ dependencies {
     testImplementation(libs.mockitoKotlin)
     testImplementation(libs.jUnitRules)
     testImplementation(libs.jUnitRunner)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing)
 }
